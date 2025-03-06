@@ -87,6 +87,21 @@ fun sqrt(x: u128): u64 {
     u128::sqrt(x) as u64
 }
 
+#[spec]
+fun sqrt_spec(x: u128): u64 {
+    let result = sqrt(x);
+
+    let result_int = result.to_int();
+    let x_int = x.to_int();
+
+    // result * result <= x
+    ensures(result_int.mul(result_int).lte(x_int));
+    // (result + 1) * (result + 1) > x
+    ensures(result_int.add(1u64.to_int()).mul(result_int.add(1u64.to_int())).gt(x_int));
+
+    result
+}
+
 /// Calculates (a * b) / c for u128. Errors if result doesn't fit into u128.
 fun muldiv_u128(a: u128, b: u128, c: u128): u128 {
     (((a as u256) * (b as u256)) / (c as u256)) as u128
@@ -375,12 +390,66 @@ public fun admin_set_fees<A, B>(
     pool.admin_fee_pct = admin_fee_pct;
 }
 
-#[spec]
+// specs
+
+#[spec_only]
+use prover::prover::{requires, ensures, asserts};
+
+#[spec(verify)]
 fun admin_set_fees_spec<A, B>(
     pool: &mut Pool<A, B>,
     cap: &AdminCap,
     lp_fee_bps: u64,
     admin_fee_pct: u64,
 ) {
+    asserts(lp_fee_bps < BPS_IN_100_PCT);
+    asserts(admin_fee_pct <= 100);
     admin_set_fees(pool, cap, lp_fee_bps, admin_fee_pct);
+}
+
+#[spec]
+public fun deposit_spec<A, B>(
+    pool: &mut Pool<A, B>,
+    mut input_a: Balance<A>,
+    mut input_b: Balance<B>,
+): (Balance<A>, Balance<B>, Balance<LP<A, B>>) {
+    let input_a_int = input_a.value().to_int();
+    let input_b_int = input_b.value().to_int();
+
+    let old_L = pool.lp_supply.supply_value().to_int();
+    let old_A = pool.balance_a.value().to_int();
+    let old_B = pool.balance_b.value().to_int();
+
+    let max_int = std::u64::max_value!().to_int();
+    requires(input_a_int.add(old_A).lte(max_int));
+    requires(input_b_int.add(old_B).lte(max_int));
+
+    requires(old_L.mul(old_L).lte(old_A.mul(old_B)));
+
+    requires(
+        (old_A.is_zero!() && old_B.is_zero!() && old_L.is_zero!()) ||
+        (!old_A.is_zero!() && !old_B.is_zero!() && !old_L.is_zero!()),
+    );
+
+    let (deposit_a, deposit_b, lp_to_issue) = deposit(pool, input_a, input_b);
+
+    let new_L = pool.lp_supply.supply_value().to_int();
+    let new_A = pool.balance_a.value().to_int();
+    let new_B = pool.balance_b.value().to_int();
+
+    // L <= sqrt(A * B)
+    // L * L <= A * B
+    ensures((new_L.mul(new_L).lte(new_A.mul(new_B))));
+
+    // price never decreases
+    // A / L <= new_A / new_L
+    // A * new_L <= new_A * L
+    ensures((new_A.mul(new_L).lte(new_A.mul(new_L))));
+
+    // pool is either empty or has more liquidity, matching a and b
+    ensures(
+        (new_A.is_zero!() && new_B.is_zero!() && new_L.is_zero!()) ||
+        (!new_A.is_zero!() && !new_B.is_zero!() && !new_L.is_zero!()),
+    );
+    (deposit_a, deposit_b, lp_to_issue)
 }
