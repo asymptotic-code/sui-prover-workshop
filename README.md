@@ -4,7 +4,7 @@
 
 Install the prover
 ```
-brew reinstall --formula ./revive-prover.rb
+brew reinstall --formula ./homebrew-formula/revive-prover.rb
 ```
 
 Clone the Sui repo clone and checkout the `next` branch
