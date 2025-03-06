@@ -16,5 +16,5 @@ git checkout next
 
 # Execute the prover
 ```
-sui-move build --generate-boogie
+sui-move build --prove
 ```

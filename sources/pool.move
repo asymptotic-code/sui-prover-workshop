@@ -2,7 +2,6 @@
 module amm::pool;
 
 use std::u128;
-use std::u64;
 use sui::balance::{Self, Balance, Supply, create_supply};
 use sui::event;
 
@@ -374,4 +373,14 @@ public fun admin_set_fees<A, B>(
 
     pool.lp_fee_bps = lp_fee_bps;
     pool.admin_fee_pct = admin_fee_pct;
+}
+
+#[spec]
+fun admin_set_fees_spec<A, B>(
+    pool: &mut Pool<A, B>,
+    cap: &AdminCap,
+    lp_fee_bps: u64,
+    admin_fee_pct: u64,
+) {
+    admin_set_fees(pool, cap, lp_fee_bps, admin_fee_pct);
 }
