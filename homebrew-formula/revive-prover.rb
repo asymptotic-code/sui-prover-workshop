@@ -1,11 +1,11 @@
 class ReviveProver < Formula
     desc "Sui Move Prover - a tool for verifying Move smart contracts on the Sui blockchain"
     homepage "https://github.com/asymptotic-code/sui"
-    url "https://github.com/asymptotic-code/sui.git", using: :git, branch: "revive_prover"
+    url "https://github.com/asymptotic-code/sui.git", using: :git, branch: "next"
     version "0.1.0"
     license "Apache-2.0"
 
-    head "https://github.com/asymptotic-code/sui.git", branch: "revive_prover"
+    head "https://github.com/asymptotic-code/sui.git", branch: "next"
 
   
     depends_on "rust" => :build
