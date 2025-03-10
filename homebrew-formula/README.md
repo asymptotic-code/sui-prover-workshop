@@ -2,6 +2,6 @@
 
 | Platform              | Stable version  | Head version  |
 |-----------------------|-----------------|---------------|
-| **Linux guest machine**| ✅ | ✅ |
+| **Ubuntu 24.04**      | ✅ | ✅ |
 | **MacOS**             | ✅ | ✅ |
 | **Docker**            | ✅ | ✅ |
