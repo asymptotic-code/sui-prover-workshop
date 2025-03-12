@@ -410,8 +410,8 @@ fun admin_set_fees_spec<A, B>(
 #[spec]
 public fun deposit_spec<A, B>(
     pool: &mut Pool<A, B>,
-    mut input_a: Balance<A>,
-    mut input_b: Balance<B>,
+    input_a: Balance<A>,
+    input_b: Balance<B>,
 ): (Balance<A>, Balance<B>, Balance<LP<A, B>>) {
     let input_a_int = input_a.value().to_int();
     let input_b_int = input_b.value().to_int();
