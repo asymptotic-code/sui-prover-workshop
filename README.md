@@ -4,7 +4,7 @@
 
 Install the prover
 ```
-brew install --formula ./homebrew-formula/sui-move-prover.rb
+brew install --formula ./homebrew-formula/sui-prover.rb
 ```
 
 Clone the Sui repo clone and checkout the `next` branch
@@ -17,5 +17,5 @@ cd ..
 
 # Execute the prover
 ```
-sui-move build --prove
+sui-prover [Options]
 ```
