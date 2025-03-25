@@ -9,5 +9,5 @@ brew install asymptotic-code/sui-prover/sui-prover
 
 # Execute the prover
 ```
-sui-prover
+sui-prover --split-paths=4
 ```
