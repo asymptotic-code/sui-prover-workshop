@@ -395,7 +395,7 @@ public fun admin_set_fees<A, B>(
 #[spec_only]
 use prover::prover::{requires, ensures, asserts};
 
-#[spec(verify)]
+#[spec(prove)]
 fun admin_set_fees_spec<A, B>(
     pool: &mut Pool<A, B>,
     cap: &AdminCap,
@@ -407,7 +407,7 @@ fun admin_set_fees_spec<A, B>(
     admin_set_fees(pool, cap, lp_fee_bps, admin_fee_pct);
 }
 
-#[spec]
+#[spec(prove)]
 public fun deposit_spec<A, B>(
     pool: &mut Pool<A, B>,
     input_a: Balance<A>,
